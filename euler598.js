@@ -48,21 +48,53 @@ var primeFactorsOfFactorial = function(n) {
   return f.sort(function(a, b) { return a - b; });
 };
 
+var complement = function(n, k, combination) {
+  var c = [];
+  var i = 0;
+  var j = 0;
+  while (i < n) {
+    if (j >= k || i < combination[j]) {
+      c.push(i);
+    } else {
+      j++;
+    }
+    i++;
+  }
+  return c;
+};
+
+var multiply = function(a, b) {
+  return a*b;
+};
+
 var pairsWithEqualFactorCount = function(n) {
   var p = primeFactorsOfFactorial(n);
+  var p_factorial = p.reduce(multiply);
+  console.log("" + p_factorial);
   var indexes = [];
 
   for (var i=0; i<p.length; i++) {
     indexes.push(i);
   }
 
-  var cmb = Combinatorics.power(indexes);
-  while (a = cmb.next()) {
-    var i1 = 0;
-    var i2 = 0;
-    var astar = [];
-    while (i1 < a.length) {
-    
+  var result = [];
+  for (var k=2; k<=p.length/2; k++) {
+    console.log(k);
+    var cmb = Combinatorics.bigCombination(indexes, k);
+    while (a = cmb.next()) {
+      var b = complement(p.length, k, a);
+      var a_p = a.map(function(i) {return p[i];});
+      var b_p = b.map(function(i) {return p[i];});
+      if (factors(a_p).length === factors(b_p).length) {
+        var a_product = a_p.reduce(multiply);
+        var b_product = b_p.reduce(multiply);
+        result.push([a_product, b_product]);
+      }
+    }
   }
+  var finalResult = uniq(result);
+  console.log(finalResult);
+  console.log(finalResult.length);
 };
-  
+
+pairsWithEqualFactorCount(12);
