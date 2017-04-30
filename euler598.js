@@ -2,6 +2,8 @@ var Combinatorics = require('js-combinatorics');
 
 var primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97];
 
+var FastSet = require("collections/fast-set");
+
 var primeFactorsRecursive = function(n, f) {
   var i;
   if (n === 1) {
@@ -67,21 +69,45 @@ var multiply = function(a, b) {
   return a*b;
 };
 
+var complement = function(p, s) {
+  var c = [];
+  var ip = 0;
+  var is = 0;
+  while (ip < p.length) {
+    if (p[ip] === s[is]) {
+      is++;
+    } else {
+      c.push(p[ip]);
+    }
+    ip++;
+  }
+  return c;
+}
+
+var arrayEquals = function(a, b) {
+  return (a.join(",") === b.join(","));
+};
+  
+
 var pairsWithEqualFactorCount = function(n) {
   var p = primeFactorsOfFactorial(n);
+  console.log("" + p);
   var p_factorial = p.reduce(multiply);
   console.log("" + p_factorial);
-  var indexes = [];
-
-  for (var i=0; i<p.length; i++) {
-    indexes.push(i);
-  }
 
   var result = [];
+  var cmbs = new Set();
+  
   for (var k=2; k<=p.length/2; k++) {
     console.log(k);
-    var cmb = Combinatorics.bigCombination(indexes, k);
+    var cmb = Combinatorics.bigCombination(p, k);
     while (a = cmb.next()) {
+      cmbs.add(a.join(','));
+    }
+  }
+  var cmbarray = cmbs.toArray();
+  console.log(cmbarray);
+  /*
       var b = complement(p.length, k, a);
       var a_p = a.map(function(i) {return p[i];});
       var b_p = b.map(function(i) {return p[i];});
@@ -95,6 +121,7 @@ var pairsWithEqualFactorCount = function(n) {
   var finalResult = uniq(result);
   console.log(finalResult);
   console.log(finalResult.length);
+   */
 };
 
-pairsWithEqualFactorCount(12);
+pairsWithEqualFactorCount(100);
